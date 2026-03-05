@@ -10,14 +10,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repo
+
+    - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Build Docker containers
+    - name: Build containers
       run: docker compose build
 
-    - name: Start services
+    - name: Start containers
       run: docker compose up -d
 
-    - name: Show running containers
+    - name: List running containers
       run: docker ps
