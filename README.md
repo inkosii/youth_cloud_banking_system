@@ -60,7 +60,7 @@ Prometheus and Grafana provide full observability:
 
 **Prometheus Targets:**
 
-![Prometheus Targets](Documentation/prometheus-targets.JPG)
+![Prometheus Targets](Documentation/prometheus-.JPG)
 
 Check that all services show `UP` to confirm metrics are being scraped successfully.
 
