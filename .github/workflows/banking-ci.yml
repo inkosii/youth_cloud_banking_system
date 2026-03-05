@@ -7,14 +7,15 @@ on:
     branches: [ "main" ]
 
 env:
-  DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-  DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+  DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
   PROJECT_NAME: cloud-banking
 
 jobs:
 
   build-java:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -50,6 +51,7 @@ jobs:
   docker-build:
     needs: build-java
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -62,11 +64,8 @@ jobs:
 
       - name: Build Docker Images
         run: |
-          # Build Eureka Server
           docker build -t $DOCKERHUB_USERNAME/eureka-server:latest -f java-services/eureka-server/Dockerfile java-services/eureka-server
-          # Build Account Service
           docker build -t $DOCKERHUB_USERNAME/account-service:latest -f java-services/account-service/Dockerfile java-services/account-service
-          # Build Transaction Service
           docker build -t $DOCKERHUB_USERNAME/transaction-service:latest -f java-services/transaction-service/Dockerfile java-services/transaction-service
 
       - name: Push Docker Images
@@ -78,6 +77,7 @@ jobs:
   integration-test:
     needs: docker-build
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
