@@ -1,47 +1,23 @@
-# Cloud-Sim Bank – AWS Open-Source Simulation
-
-## Project Overview
-
-Cloud-Sim Bank is a cloud-native banking system simulation built using 100% open-source tools.  
-It mirrors AWS Cloud Practitioner and Solutions Architect concepts using local infrastructure.
-
-This project demonstrates:
-
-- Microservices architecture
-- API Gateway management
-- Infrastructure as Code
-- Container orchestration with Kubernetes
-- Monitoring & observability
-
----
+# Cloud-Sim Bank – Cloud Simulation with Microservices
 
 ## Architecture
 
-User → Kong Gateway → FastAPI  
-User → Kong → Account Service  
-User → Kong → Transaction Service  
+![Architecture Diagram](Documentation/architecture_diagram.png)
 
-Services communicate via REST.  
-PostgreSQL provides persistence.  
-Prometheus + Grafana provide monitoring.
+This project simulates a cloud-native banking system using microservices and open-source tools.  
+It demonstrates how distributed services, API gateways, and monitoring stacks interact in a realistic banking environment.
 
----
+**Architecture Overview:**
 
-## Tech Stack
-
-- Java Spring Boot
-- FastAPI
-- PostgreSQL
-- Docker
-- Kubernetes (Minikube)
-- Terraform
-- Kong Gateway
-- Prometheus
-- Grafana
+- Client requests go through **Kong API Gateway**.
+- Microservices handle business logic:
+  - **Account Service** – Manages user accounts.
+  - **Transaction Service** – Handles transactions between accounts.
+  - **FastAPI** – Optional integration service exposed via Kong.
+- **PostgreSQL** provides data persistence.
+- **Prometheus + Grafana** monitor system metrics.
+- **ELK Stack** (Elasticsearch, Logstash, Kibana) collects logs centrally.
 
 ---
 
-## How To Run (Docker)
-
-```bash
-docker compose up --build
+## Project Structure
