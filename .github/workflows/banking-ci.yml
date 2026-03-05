@@ -38,6 +38,13 @@ jobs:
         cd java-services/transaction-service
         mvn clean package
 
+    - name: Collect JARs for Docker Build
+      run: |
+        mkdir -p target
+        cp java-services/eureka-server/target/eureka-server-0.0.1-SNAPSHOT.jar target/
+        cp java-services/account-service/target/account-service-0.0.1-SNAPSHOT.jar target/
+        cp java-services/transaction-service/target/transaction-service-0.0.1-SNAPSHOT.jar target/
+
   docker-build:
 
     needs: build-java
