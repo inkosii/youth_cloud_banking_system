@@ -2,14 +2,11 @@ name: Cloud Banking CI Pipeline
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 env:
-  DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-  DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-  PROJECT_NAME: cloud-banking
+  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
 jobs:
 
@@ -41,13 +38,6 @@ jobs:
           cd java-services/transaction-service
           mvn clean package -DskipTests
 
-      - name: Collect JARs for Docker Build
-        run: |
-          mkdir -p target
-          cp java-services/eureka-server/target/eureka-server-0.0.1-SNAPSHOT.jar target/
-          cp java-services/account-service/target/account-service-0.0.1-SNAPSHOT.jar target/
-          cp java-services/transaction-service/target/transaction-service-0.0.1-SNAPSHOT.jar target/
-
   docker-build:
     needs: build-java
     runs-on: ubuntu-latest
@@ -56,23 +46,23 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Login to Docker Hub
+      - name: Login to DockerHub
         uses: docker/login-action@v2
         with:
-          username: ${{ env.DOCKERHUB_USERNAME }}
-          password: ${{ env.DOCKERHUB_PASSWORD }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build Docker Images
         run: |
-          docker build -t $DOCKERHUB_USERNAME/eureka-server:latest -f java-services/eureka-server/Dockerfile java-services/eureka-server
-          docker build -t $DOCKERHUB_USERNAME/account-service:latest -f java-services/account-service/Dockerfile java-services/account-service
-          docker build -t $DOCKERHUB_USERNAME/transaction-service:latest -f java-services/transaction-service/Dockerfile java-services/transaction-service
+          docker build -t $DOCKER_USERNAME/account-service:latest java-services/account-service
+          docker build -t $DOCKER_USERNAME/transaction-service:latest java-services/transaction-service
+          docker build -t $DOCKER_USERNAME/eureka-server:latest java-services/eureka-server
 
       - name: Push Docker Images
         run: |
-          docker push $DOCKERHUB_USERNAME/eureka-server:latest
-          docker push $DOCKERHUB_USERNAME/account-service:latest
-          docker push $DOCKERHUB_USERNAME/transaction-service:latest
+          docker push $DOCKER_USERNAME/account-service:latest
+          docker push $DOCKER_USERNAME/transaction-service:latest
+          docker push $DOCKER_USERNAME/eureka-server:latest
 
   integration-test:
     needs: docker-build
@@ -82,11 +72,11 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Start System
+      - name: Start Services
         run: docker compose up -d
 
       - name: Wait for containers
         run: sleep 30
 
-      - name: Show Running Containers
+      - name: Show running containers
         run: docker ps
