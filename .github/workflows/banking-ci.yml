@@ -23,6 +23,11 @@ jobs:
         distribution: temurin
         java-version: 17
 
+    - name: Build Eureka Server
+      run: |
+        cd java-services/eureka-server
+        mvn clean package
+
     - name: Build Account Service
       run: |
         cd java-services/account-service
